@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f3f4f6; /* Light gray background */
+        }
+
+        nav {
+            background-color: #007bff;
+            color: #fff;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #0056b3;
+        }
+
+        nav div {
+            font-size: 1.5rem;
+        }
+
+        .nav-items {
+            display: flex;
+            flex-direction: row; /* Display items in a row by default */
+        }
+
+        .nav-items a {
+            color: #fff;
+            text-decoration: none;
+            margin-left: 20px;
+            font-size: 1.2rem;
+        }
+
+        .nav-items a:hover {
+            color: #ccc;
+        }
+
+        .ri-menu-line {
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        .container {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container p {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        form div {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 10px; /* Increased padding for larger inputs */
+            width: 80%;
+            max-width: 300px;
+        }
+
+        form div i {
+            margin-right: 10px;
+            font-size: 1.5vw;
+            color: #007bff; /* Changed icon color to blue */
+        }
+
+        form input {
+            border: none;
+            outline: none;
+            font-size: 1.2rem; /* Increased font size for better visibility */
+            width: 100%;
+            padding: 10px; /* Increased padding for larger inputs */
+        }
+
+        form button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 15px 40px; /* Increased padding for larger button */
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        form button:hover {
+            background-color: #0056b3;
+        }
+
+        .items {
+            position: absolute;
+            top: -110%;
+            width: 100%;
+            background-color: #007bff;
+            padding: 20px;
+            transition: 0.3s all ease;
+            display: none;
+        }
+
+        .hamburger {
+            display: none;
+        }
+
+        #map {
+            height: 400px;
+            width: 80%;
+            margin: 0 auto;
+            margin-top: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #fuel-price {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        #get-started-button, #back-button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 15px 40px; /* Increased padding for larger button */
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #get-started-button:hover, #back-button:hover {
+            background-color: #0056b3;
+        }
+
+        @media screen and (max-width: 768px) {
+            nav div {
+                font-size: 1.2rem;
+            }
+
+            .nav-items {
+                flex-direction: column; /* Display items in a column for smaller screens */
+                align-items: center; /* Center items vertically */
+                margin-top: 10px; /* Add margin to separate items */
+            }
+
+            .nav-items a {
+                margin: 10px 0; /* Add margin to separate items */
+            }
+
+            .hamburger {
+                display: block;
+            }
+
+            .container p {
+                font-size: 1.2rem;
+            }
+
+            form div {
+                width: 90%;
+            }
+
+            form button {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <div>logo</div>
+        <div class="nav-items">
+            <a href="/">Home</a>
+            <a href="">About</a>
+            <a href="">Profile</a>
+            <a href="">Contact</a>
+        </div>
+        <i class="ri-menu-line hamburger"></i>
+    </nav>
+
+    <div class="container">
+        <p>Enter Vehicle Details</p>
+        <form method="post" onsubmit="return updateMap()">
+            <div>
+                <i class="ri-map-pin-line"></i>
+                <input type="text" placeholder="Enter Location" name="current" id="current">
+            </div>
+            <div>
+                <i class="ri-treasure-map-fill"></i>
+                <input type="text" placeholder="Enter destination" name="destination" id="destination">
+            </div>
+            <div>
+                <i class="ri-gas-station-fill"></i>
+                <input type="text" placeholder="Enter Mileage" name="mileage" id="mileage">
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <div id="map" class="hidden"></div>
+    <div id="fuel-price" class="hidden"></div>
+    <button id="get-started-button" class="hidden" onclick="redirectToGoogleMaps()">Get Started</button>
+    <button id="back-button" class="hidden" onclick="showForm()">Back</button>
+
+    <script>
+        let ham = document.querySelector('.hamburger');
+        let items = document.querySelector('.nav-items');
+        let open = false;
+
+        ham.addEventListener('click', () => {
+            if (open === false) {
+                items.style.display = 'block';
+                open = true;
+            } else {
+                items.style.display = 'none';
+                open = false;
+            }
+        });
+
+        async function updateMap() {
+            // Prevent the form from submitting
+            event.preventDefault();
+
+            // Get the starting and ending locations from the form
+            const startLocation = document.getElementById('current').value;
+            const endLocation = document.getElementById('destination').value;
+
+            // Convert the string locations to latitude and longitude coordinates using Nominatim API
+            const startCoordinates = await geocode(startLocation);
+            const endCoordinates = await geocode(endLocation);
+
+            // Use the startCoordinates and endCoordinates values to update the map
+            // Create map markers for the starting and ending locations
+            const startMarker = L.marker(startCoordinates).addTo(mymap);
+            const endMarker = L.marker(endCoordinates).addTo(mymap);
+
+            // Create a bounds object to encompass both markers
+            const bounds = L.latLngBounds([startCoordinates, endCoordinates]);
+
+            // Fit the map to the bounds
+            mymap.fitBounds(bounds);
+
+            // Add a route between the starting and ending locations
+            const route = await getRoute(startCoordinates, endCoordinates);
+            L.polyline(route, { color: 'red' }).addTo(mymap);
+
+            // Calculate fuel cost based on the distance and input mileage
+            const mileage = parseFloat(document.getElementById('mileage').value);
+            const distance = calculateDistance(startCoordinates, endCoordinates);
+            const fuelCost = calculateFuelCost(distance, mileage);
+
+            // Display fuel cost
+            document.getElementById('fuel-price').innerHTML = fuelCost.toFixed(2);
+
+            // Show map, fuel price, and buttons, hide the form
+
+            // Return false to prevent the form from submitting
+            return false;
+        }
+
+        async function geocode(location) {
+            const response = await fetch(`https://nominatim.openstreetmap.org/search?q=${location}&format=json`);
+            const data = await response.json();
+            if (data.length > 0) {
+                return [data[0].lat, data[0].lon];
+            } else {
+                alert("Location not found");
+                return null;
+            }
+        }
+
+        async function getRoute(start, end) {
+            const url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=&start=${start[0]},${start[1]}&end=${end[0]},${end[1]}`;
+
+            const response = await fetch(url);
+            const data = await response.json();
+
+            // Extract coordinates from the response and return as an array
+            const coordinates = data.features[0].geometry.coordinates.map(coord => [coord[1], coord[0]]);
+            return coordinates;
+        }
+
+        function calculateDistance(start, end) {
+            // You can implement the distance calculation logic here
+            // This function should return the distance between two points in kilometers
+            const lat1 = start[0];
+            const lon1 = start[1];
+            const lat2 = end[0];
+            const lon2 = end[1];
+            const R = 6371; // Radius of the earth in km
+            const dLat = deg2rad(lat2 - lat1);
+            const dLon = deg2rad(lon2 - lon1);
+            const a =
+                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            const distance = R * c; // Distance in km
+            return distance;
+        }
+
+        function deg2rad(deg) {
+            return deg * (Math.PI / 180);
+        }
+
+        function calculateFuelCost(distance, mileage) {
+            // You can implement the fuel cost calculation logic here
+            // This function should return the fuel cost based on distance and mileage
+            const fuelPrice = 96; // Price per liter of fuel in Indian Rupees
+            const fuelConsumption = mileage / 100; // Fuel consumption in liters per kilometer
+            const fuelCost = distance * fuelConsumption * fuelPrice;
+            return fuelCost;
+        }
+
+        function redirectToGoogleMaps() {
+            const startLocation = document.getElementById('current').value;
+            const endLocation = document.getElementById('destination').value;
+            window.location.href = `https://www.google.com/maps/dir/${startLocation}/${endLocation}`;
+        }
+
+        function showForm() {
+            // Show form, hide map, fuel price, and buttons
+            document.getElementById('container').classList.remove('hidden');
+            document.getElementById('map').classList.add('hidden');
+            document.getElementById('fuel-price').classList.add('hidden');
+            document.getElementById('get-started-button').classList.add('hidden');
+            document.getElementById('back-button').classList.add('hidden');
+        }
+    </script>
+
+    <script src="https://unpkg.com/leaflet"></script>
+    <script>
+        var mymap = L.map('map').setView([51.505, -0.09], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(mymap);
+    </script>
+</body>
+
+</html>
