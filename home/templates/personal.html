@@ -14,7 +14,8 @@
             font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f3f4f6; /* Light gray background */
+            background-color: #f3f4f6;
+            /* Light gray background */
         }
 
         nav {
@@ -33,7 +34,8 @@
 
         .nav-items {
             display: flex;
-            flex-direction: row; /* Display items in a row by default */
+            flex-direction: row;
+            /* Display items in a row by default */
         }
 
         .nav-items a {
@@ -75,7 +77,8 @@
             align-items: center;
             background-color: #fff;
             border-radius: 5px;
-            padding: 10px; /* Increased padding for larger inputs */
+            padding: 10px;
+            /* Increased padding for larger inputs */
             width: 80%;
             max-width: 300px;
         }
@@ -83,15 +86,18 @@
         form div i {
             margin-right: 10px;
             font-size: 1.5vw;
-            color: #007bff; /* Changed icon color to blue */
+            color: #007bff;
+            /* Changed icon color to blue */
         }
 
         form input {
             border: none;
             outline: none;
-            font-size: 1.2rem; /* Increased font size for better visibility */
+            font-size: 1.2rem;
+            /* Increased font size for better visibility */
             width: 100%;
-            padding: 10px; /* Increased padding for larger inputs */
+            padding: 10px;
+            /* Increased padding for larger inputs */
         }
 
         form button {
@@ -99,7 +105,8 @@
             color: #fff;
             border: none;
             border-radius: 5px;
-            padding: 15px 40px; /* Increased padding for larger button */
+            padding: 15px 40px;
+            /* Increased padding for larger button */
             font-size: 1.2rem;
             cursor: pointer;
             transition: background-color 0.3s ease;
@@ -137,12 +144,14 @@
             margin-bottom: 20px;
         }
 
-        #get-started-button, #back-button {
+        #get-started-button,
+        #back-button {
             background-color: #007bff;
             color: #fff;
             border: none;
             border-radius: 5px;
-            padding: 15px 40px; /* Increased padding for larger button */
+            padding: 15px 40px;
+            /* Increased padding for larger button */
             font-size: 1.2rem;
             cursor: pointer;
             transition: background-color 0.3s ease;
@@ -152,7 +161,8 @@
             margin-right: auto;
         }
 
-        #get-started-button:hover, #back-button:hover {
+        #get-started-button:hover,
+        #back-button:hover {
             background-color: #0056b3;
         }
 
@@ -162,13 +172,17 @@
             }
 
             .nav-items {
-                flex-direction: column; /* Display items in a column for smaller screens */
-                align-items: center; /* Center items vertically */
-                margin-top: 10px; /* Add margin to separate items */
+                flex-direction: column;
+                /* Display items in a column for smaller screens */
+                align-items: center;
+                /* Center items vertically */
+                margin-top: 10px;
+                /* Add margin to separate items */
             }
 
             .nav-items a {
-                margin: 10px 0; /* Add margin to separate items */
+                margin: 10px 0;
+                /* Add margin to separate items */
             }
 
             .hamburger {
@@ -224,7 +238,6 @@
     <div id="map" class="hidden"></div>
     <div id="fuel-price" class="hidden"></div>
     <button id="get-started-button" class="hidden" onclick="redirectToGoogleMaps()">Get Started</button>
-    <button id="back-button" class="hidden" onclick="showForm()">Back</button>
 
     <script>
         let ham = document.querySelector('.hamburger');
@@ -244,7 +257,6 @@
         async function updateMap() {
             // Prevent the form from submitting
             event.preventDefault();
-
             // Get the starting and ending locations from the form
             const startLocation = document.getElementById('current').value;
             const endLocation = document.getElementById('destination').value;
@@ -321,6 +333,8 @@
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
             const distance = R * c; // Distance in km
             return distance;
+            console.log(distance);
+
         }
 
         function deg2rad(deg) {
