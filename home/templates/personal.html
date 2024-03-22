@@ -165,12 +165,14 @@
         #back-button:hover {
             background-color: #0056b3;
         }
-        #fuel-price{
+
+        #fuel-price {
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 7vw 0;
         }
+
         @media screen and (max-width: 768px) {
             nav div {
                 font-size: 1.2rem;
@@ -211,12 +213,12 @@
 
 <body>
     <nav>
-        <div>logo</div>
+        <div>RouteEase</div>
         <div class="nav-items">
-            <a href="/">Home</a>
-            <a href="">About</a>
-            <a href="">Profile</a>
-            <a href="">Contact</a>
+            <a href="/home/">Home</a>
+            <a href="/about/">About</a>
+            <a href="/profile/">Profile</a>
+            <a href="/contact/">Contact</a>
         </div>
         <i class="ri-menu-line hamburger"></i>
     </nav>
@@ -236,7 +238,7 @@
             <div>
                 <i class="ri-gas-station-fill"></i>
                 <input type="text" placeholder="Enter Mileage" name="mileage" id="mileage">
-           
+
             </div>
             <button type="submit">Submit</button>
         </form>
@@ -244,28 +246,28 @@
 
     <div id="map"></div>
     <div id="fuel-price"></div>
-    <button id="get-started-button" onclick="redirectToGoogleMaps(startLocation, endLocation)">Get Started</button>
+    <button id="get-started-button" onclick="openMap()">Get Started</button>
 
     <script>
         async function updateMap() {
             try {
                 event.preventDefault();
-                
+
                 // Get the starting and ending locations from the form
                 const startLocation = document.getElementById('current').value;
                 const endLocation = document.getElementById('destination').value;
                 const mileage = parseFloat(document.getElementById('mileage').value);
-                
+
                 // Geocode the locations to get coordinates
                 const startCoordinates = await geocode(startLocation);
                 const endCoordinates = await geocode(endLocation);
-                
+
                 // Proceed if coordinates are retrieved successfully
                 if (startCoordinates && endCoordinates) {
                     // Update the map
                     updateMapWithRoute(startCoordinates, endCoordinates, mileage);
                 }
-                
+
                 return false;
             } catch (error) {
                 console.error("Error occurred:", error);
@@ -310,7 +312,7 @@
 
                 // Get route coordinates from OpenRouteService
                 const routeCoordinates = await getRoute(startCoordinates.coordinates, endCoordinates.coordinates);
-                
+
                 // Draw route on the map
                 const route = L.polyline(routeCoordinates, { color: 'blue' }).addTo(map);
 
@@ -321,7 +323,7 @@
                 // Calculate and display fuel cost
                 const distance = calculateDistance(startCoordinates.coordinates, endCoordinates.coordinates);
                 const fuelCost = calculateFuelCost(distance, mileage);
-                document.getElementById('fuel-price').innerText = `Estimated fuel cost: $${fuelCost.toFixed(2)}`;
+                document.getElementById('fuel-price').innerText = `Estimated fuel cost: ₹${fuelCost.toFixed(2)}`;
 
                 // Show the get started button
                 document.getElementById('get-started-button').classList.remove('hidden');
@@ -377,25 +379,30 @@
         }
 
         function calculateFuelCost(distance, mileage) {
-        try {
-            const fuelPrice = 95; // Price per liter of fuel in Indian Rupees
-            const fuelConsumption = mileage / 100; // Fuel consumption in liters per kilometer
-            const fuelCost = distance * fuelConsumption * fuelPrice;
-            return fuelCost;
-        } catch (error) {
-            console.error("Error occurred during fuel cost calculation:", error);
-            throw error;
+            try {
+                const fuelPrice = 95; // Price per liter of fuel in Indian Rupees
+                const fuelConsumption = mileage / 100; // Fuel consumption in liters per kilometer
+                const fuelCost = distance * fuelConsumption * fuelPrice;
+                return fuelCost;
+            } catch (error) {
+                console.error("Error occurred during fuel cost calculation:", error);
+                throw error;
+            }
         }
-    }
 
         function deg2rad(deg) {
             return deg * (Math.PI / 180);
         }
 
-    function redirectToGoogleMaps(startLocation, endLocation) {
-        const url = `https://www.google.com/maps/dir/${startLocation}/${endLocation}`;
-        window.location.href = url;
-    }
+        function openMap() {
+            const startLocation = document.getElementById('current').value;
+            const endLocation = document.getElementById('destination').value;
+            // Construct the Google Maps URL
+            var mapsUrl = "https://www.google.com/maps/dir/" + encodeURIComponent(startLocation) + "/" + encodeURIComponent(endLocation);
+
+            // Redirect the user to the Google Maps URL
+            window.location.href = mapsUrl;
+        }
 
     </script>
 
