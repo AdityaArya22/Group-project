@@ -13,7 +13,7 @@ def personal(request):
 
 def signuppage(request):
     if request.method == "POST":
-        username = request.POST.get('name').strip()
+        username = request.POST.get('username').strip()
         password = request.POST.get('password').strip()
         email = request.POST.get('email').strip()
 
@@ -21,9 +21,9 @@ def signuppage(request):
             messages.error(request, "Please fill in all fields")
             return redirect('/')
 
-        user = User.objects.filter(email=email)
+        user = User.objects.filter(username=username)
         if user.exists():
-            messages.error(request, "Email Already in use")
+            messages.error(request, "Username alreday exists")
             return redirect('/')
 
         user = User.objects.create(
@@ -38,22 +38,22 @@ def signuppage(request):
 
 def loginpage(request):
     if request.method == "POST":
-        email = request.POST.get('email')
+        username = request.POST.get('username')
         password = request.POST.get('password')
         
-        email = email.strip()
+        username = username.strip()
 
-        if not email:
+        if not username:
             messages.error(request, "Please enter your email")
             return redirect('/loginpage/')
 
-        user = authenticate(email=email, password=password)
+        user = authenticate(username=username, password=password)
         if user is None:
-            messages.error(request, "Invalid email or password")
+            messages.error(request, "Invalid username or password")
             return redirect('/loginpage/')
         else:
             login(request, user)
-            return redirect('/personal/')
+            return redirect('/home/')
 
     return render(request, "login.html")  
 
